@@ -1,6 +1,6 @@
 <div align="center">
 
-# ☁️ SRI
+# ☁️ SRIDHAR
 
 ### AWS SOLUTIONS ARCHITECT | CLOUD ENGINEER
 
