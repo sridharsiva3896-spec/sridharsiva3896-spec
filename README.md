@@ -96,3 +96,6 @@ React + Vite + TypeScript
        │          AWS Services            │
        │ EC2 • IAM • Cost Explorer • etc │
        └─────────────────────────────────┘
+### 📸 Dashboard Preview
+
+<img src="./cloud-control-center-dashboard.png" alt="Cloud Control Center Dashboard" width="100%"/>
