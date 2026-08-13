@@ -10,7 +10,7 @@
 I'm **Sridhar**, an AWS-focused Cloud Engineer interested in designing and building reliable, secure, scalable, and cost-aware cloud systems.
 
 My engineering focus is on understanding systems from the architecture level to implementation — including cloud infrastructure, backend services, containerization, infrastructure as code, observability, security, and deployment automation.
-
+I enjoy building practical cloud projects that combine **AWS architecture, automation, monitoring, security, and cost optimization** into production-oriented solutions.
 ---
 
 ## ☁️ Engineering Focus
