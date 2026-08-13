@@ -1,5 +1,5 @@
 <div align="center">
-
+<img src="./Aws%20banner.png" alt="Sridhar - AWS Solutions Architect" width="100%">
 # ☁️ SRIDHAR
 
 ### AWS SOLUTIONS ARCHITECT | CLOUD ENGINEER
