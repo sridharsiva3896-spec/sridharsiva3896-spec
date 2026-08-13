@@ -1,13 +1,6 @@
 <div align="center">
 <img src="./AWS%20banner.png" alt="Sridhar - AWS Solutions Architect" width="100%">
-# ☁️ SRIDHAR
-
-### AWS SOLUTIONS ARCHITECT | CLOUD ENGINEER
-
-**Designing • Building • Automating Cloud-Native Systems**
-
-AWS Architecture • Cloud Infrastructure • DevOps • Security • Cost Optimization
-
+  
 </div>
 
 ---
