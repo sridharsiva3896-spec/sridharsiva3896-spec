@@ -14,7 +14,7 @@ AWS Architecture • Cloud Infrastructure • DevOps • Security • Cost Optim
 
 ## 🧭 About Me
 
-I'm **Sri**, an AWS-focused Cloud Engineer interested in designing and building reliable, secure, scalable, and cost-aware cloud systems.
+I'm **Sridhar**, an AWS-focused Cloud Engineer interested in designing and building reliable, secure, scalable, and cost-aware cloud systems.
 
 My engineering focus is on understanding systems from the architecture level to implementation — including cloud infrastructure, backend services, containerization, infrastructure as code, observability, security, and deployment automation.
 
