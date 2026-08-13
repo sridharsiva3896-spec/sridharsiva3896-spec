@@ -27,37 +27,40 @@ My engineering focus is on understanding systems from the architecture level to 
 
 ---
 
-# 🚀 Flagship Project
+## 🚀 Flagship Project
 
-## ☁️ Cloud Control Center
+# ☁️ Cloud Control Center
 
-**AWS Infrastructure Control, Monitoring & Cloud Operations Platform**
+> **AWS Infrastructure Control, Monitoring & Cloud Operations Platform**
 
-A centralized cloud management dashboard designed to help cloud engineers and administrators monitor, analyze and interact with AWS infrastructure through a unified interface.
+A centralized cloud management platform designed to help cloud engineers monitor, analyze, and interact with AWS infrastructure through a unified interface.
 
-### Core Capabilities
+### ⚡ Core Capabilities
 
-- 🖥️ **Elastic Compute Control**
-  - AWS EC2 resource aggregation
-  - Instance monitoring and operational controls
+| Capability | Purpose |
+|---|---|
+| 🖥️ **EC2 Control** | Monitor and manage AWS compute resources |
+| 💰 **Cost Guard** | AWS Cost Explorer-based cost visibility |
+| 🔐 **IAM Security** | IAM integration with least-privilege principles |
+| 📊 **Service Telemetry** | AWS service health and connectivity monitoring |
 
-- 💰 **Billing & Cost Guard**
-  - AWS Cost Explorer integration
-  - Cost visibility and analysis
-  - Resource cost awareness
+### 🏗️ Architecture
 
-- 🔐 **IAM Least-Privilege Security**
-  - AWS IAM integration
-  - Permission-aware cloud operations
-  - Secure credential and role handling
-
-- 📊 **Service Telemetry**
-  - System health indicators
-  - API connectivity checks
-  - AWS service connectivity monitoring
-
----
-
+```text
+React + Vite + TypeScript
+          ↓
+      FastAPI
+          ↓
+  Clean Architecture
+          ↓
+   Boto3 / AWS SDK
+          ↓
+ ┌────────┬────────┬──────────────┐
+ │  EC2   │  IAM   │ Cost Explorer│
+ └────────┴────────┴──────────────┘
+          ↓
+       AWS Cloud
+```
 ## 🏗️ System Architecture
 
 ```text
