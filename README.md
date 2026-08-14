@@ -31,6 +31,7 @@ I enjoy building practical cloud projects that combine **AWS architecture, autom
 <p align="center">
   <img src="https://skillicons.dev/icons?i=aws,docker,kubernetes,linux,python,react,typescript,vite,tailwind,fastapi,git,github,terraform" />
 </p>
+
 <hr>
 
 ## 📊 Engineering Metrics
