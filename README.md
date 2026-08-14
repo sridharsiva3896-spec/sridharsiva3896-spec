@@ -100,3 +100,11 @@ React + Vite + TypeScript
 ### 📸 Dashboard Preview
 
 <img src="./cloud-control-center-dashboard.png" alt="Cloud Control Center Dashboard" width="100%"/>
+
+---
+
+### 🛠️ Tech Stack
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=aws,docker,kubernetes,linux,python,react,typescript,vite,tailwind,fastapi,git,github,terraform" />
+</p>
