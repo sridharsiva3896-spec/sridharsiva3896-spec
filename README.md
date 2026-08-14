@@ -32,6 +32,7 @@ I enjoy building practical cloud projects that combine **AWS architecture, autom
   <img src="https://skillicons.dev/icons?i=aws,docker,kubernetes,linux,python,react,typescript,vite,tailwind,fastapi,git,github,terraform" />
 </p>
 
+
 ## 🚀 Flagship Project
 
 # ☁️ Cloud Control Center
