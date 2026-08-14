@@ -117,7 +117,7 @@
       font-size="27"
       font-weight="700"
     >
-      44
+      45
     </text>
 
     <text
@@ -776,7 +776,7 @@
       width="12"
       height="12"
       rx="3"
-      fill="#315f91"
+      fill="#243b5a"
     >
       <title>2026-07-04 • 3 contributions</title>
     </rect>
@@ -809,7 +809,7 @@
       width="12"
       height="12"
       rx="3"
-      fill="#315f91"
+      fill="#243b5a"
     >
       <title>2026-07-07 • 3 contributions</title>
     </rect>
@@ -1229,7 +1229,7 @@
       rx="3"
       fill="#7db7ff"
     >
-      <title>2026-08-14 • 12 contributions</title>
+      <title>2026-08-14 • 13 contributions</title>
     </rect>
   
   </g>
@@ -1332,7 +1332,7 @@
 
   <text
     x="38"
-    y="425"
+    y="440"
     fill="#50627b"
     font-size="10"
     font-family="Arial, sans-serif"
