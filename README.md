@@ -26,6 +26,11 @@ I enjoy building practical cloud projects that combine **AWS architecture, autom
 | 🧱 Architecture | Clean Architecture and maintainable system design |
 
 ---
+### 🛠️ Tech Stack
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=aws,docker,kubernetes,linux,python,react,typescript,vite,tailwind,fastapi,git,github,terraform" />
+</p>
 
 ## 🚀 Flagship Project
 
@@ -103,8 +108,4 @@ React + Vite + TypeScript
 
 ---
 
-### 🛠️ Tech Stack
 
-<p align="center">
-  <img src="https://skillicons.dev/icons?i=aws,docker,kubernetes,linux,python,react,typescript,vite,tailwind,fastapi,git,github,terraform" />
-</p>
