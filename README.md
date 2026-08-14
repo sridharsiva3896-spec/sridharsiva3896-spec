@@ -33,6 +33,13 @@ I enjoy building practical cloud projects that combine **AWS architecture, autom
 </p>
 <hr>
 
+## 📊 Engineering Metrics
+
+<p align="center">
+  <img src="./assets/engineering-metrics.svg" alt="Engineering Metrics" width="900"/>
+</p>
+<hr>
+
 ## 🚀 Flagship Project
 
 # ☁️ Cloud Control Center
