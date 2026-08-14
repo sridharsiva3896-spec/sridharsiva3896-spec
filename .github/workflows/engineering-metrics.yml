@@ -166,6 +166,11 @@ jobs:
               const row = index % 7;
 
               const x = 55 + column * (cellSize + cellGap);
+
+              /*
+               * Keep heatmap in the existing position.
+               * Do not move this down/up.
+               */
               const y = 285 + row * (cellSize + cellGap);
 
               heatmap += `
@@ -196,8 +201,8 @@ jobs:
             const svg = `
             <svg
               width="900"
-              height="420"
-              viewBox="0 0 900 420"
+              height="450"
+              viewBox="0 0 900 450"
               xmlns="http://www.w3.org/2000/svg"
             >
 
@@ -245,7 +250,7 @@ jobs:
                 x="0"
                 y="0"
                 width="900"
-                height="420"
+                height="450"
                 rx="20"
                 fill="url(#background)"
                 stroke="#26354d"
@@ -604,7 +609,7 @@ jobs:
 
               <text
                 x="38"
-                y="440"
+                y="425"
                 fill="#50627b"
                 font-size="10"
                 font-family="Arial, sans-serif"
