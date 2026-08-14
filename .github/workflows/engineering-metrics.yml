@@ -1,6 +1,6 @@
 name: Engineering Metrics
 
-on:
+"on":
   workflow_dispatch:
   schedule:
     - cron: "30 18 * * *"
