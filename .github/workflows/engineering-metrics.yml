@@ -53,7 +53,8 @@ jobs:
             });
 
             const user = result.user;
-            const calendar = user.contributionsCollection.contributionCalendar;
+            const collection = user.contributionsCollection;
+            const calendar = collection.contributionCalendar;
 
             const days = calendar.weeks
               .flatMap(week => week.contributionDays)
@@ -61,8 +62,8 @@ jobs:
 
             function calculateStreaks(days) {
               let longest = 0;
-              let current = 0;
               let running = 0;
+              let current = 0;
 
               for (const day of days) {
                 if (day.contributionCount > 0) {
@@ -81,7 +82,10 @@ jobs:
                 }
               }
 
-              return { current, longest };
+              return {
+                current,
+                longest
+              };
             }
 
             const streaks = calculateStreaks(days);
@@ -90,150 +94,522 @@ jobs:
               contributions: calendar.totalContributions,
               currentStreak: streaks.current,
               longestStreak: streaks.longest,
-              pullRequests:
-                user.contributionsCollection.totalPullRequestContributions,
-              issues:
-                user.contributionsCollection.totalIssueContributions,
-              reviews:
-                user.contributionsCollection.totalPullRequestReviewContributions,
-              repositories:
-                user.contributionsCollection.totalRepositoriesWithContributedCommits
+              pullRequests: collection.totalPullRequestContributions,
+              issues: collection.totalIssueContributions,
+              reviews: collection.totalPullRequestReviewContributions,
+              repositories: collection.totalRepositoriesWithContributedCommits
             };
 
-            fs.mkdirSync("assets", { recursive: true });
+            /*
+             * Calculate recent activity.
+             * We use the latest 84 contribution days
+             * to create a compact activity heatmap.
+             */
+            const recentDays = days.slice(-84);
+
+            const recentTotal = recentDays.reduce(
+              (sum, day) => sum + day.contributionCount,
+              0
+            );
+
+            const recentAverage =
+              recentDays.length > 0
+                ? recentTotal / recentDays.length
+                : 0;
+
+            const maxContribution = Math.max(
+              1,
+              ...recentDays.map(day => day.contributionCount)
+            );
+
+            /*
+             * Activity score is intentionally simple and transparent.
+             * It represents recent GitHub contribution intensity,
+             * not a performance rating.
+             */
+            const activityScore = Math.min(
+              100,
+              Math.round((recentAverage / Math.max(1, 4)) * 100)
+            );
+
+            function escapeXml(value) {
+              return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&apos;");
+            }
+
+            function activityColor(count) {
+              if (count === 0) return "#182235";
+
+              const intensity = count / maxContribution;
+
+              if (intensity < 0.25) return "#243b5a";
+              if (intensity < 0.50) return "#315f91";
+              if (intensity < 0.75) return "#4d8ac4";
+
+              return "#7db7ff";
+            }
+
+            /*
+             * Build a 12-week contribution heatmap.
+             */
+            const cellSize = 12;
+            const cellGap = 4;
+
+            let heatmap = "";
+
+            recentDays.forEach((day, index) => {
+              const column = Math.floor(index / 7);
+              const row = index % 7;
+
+              const x = 55 + column * (cellSize + cellGap);
+              const y = 170 + row * (cellSize + cellGap);
+
+              heatmap += `
+                <rect
+                  x="${x}"
+                  y="${y}"
+                  width="${cellSize}"
+                  height="${cellSize}"
+                  rx="3"
+                  fill="${activityColor(day.contributionCount)}"
+                >
+                  <title>${escapeXml(day.date)} • ${day.contributionCount} contributions</title>
+                </rect>
+              `;
+            });
+
+            /*
+             * Activity bar.
+             */
+            const barWidth = Math.round(
+              420 * (activityScore / 100)
+            );
+
+            fs.mkdirSync("assets", {
+              recursive: true
+            });
 
             const svg = `
-            <svg width="900" height="230" viewBox="0 0 900 230"
-                 xmlns="http://www.w3.org/2000/svg">
+            <svg
+              width="900"
+              height="420"
+              viewBox="0 0 900 420"
+              xmlns="http://www.w3.org/2000/svg"
+            >
 
               <defs>
-                <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0%" stop-color="#111827"/>
-                  <stop offset="100%" stop-color="#0b1220"/>
+
+                <linearGradient
+                  id="background"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="1"
+                >
+                  <stop offset="0%" stop-color="#0b1220"/>
+                  <stop offset="55%" stop-color="#101827"/>
+                  <stop offset="100%" stop-color="#111a2b"/>
                 </linearGradient>
 
-                <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+                <linearGradient
+                  id="accent"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="0"
+                >
                   <stop offset="0%" stop-color="#60a5fa"/>
+                  <stop offset="50%" stop-color="#818cf8"/>
                   <stop offset="100%" stop-color="#a78bfa"/>
                 </linearGradient>
+
+                <linearGradient
+                  id="activity"
+                  x1="0"
+                  y1="0"
+                  x2="1"
+                  y2="0"
+                >
+                  <stop offset="0%" stop-color="#2563eb"/>
+                  <stop offset="100%" stop-color="#8b5cf6"/>
+                </linearGradient>
+
               </defs>
 
-              <rect x="0" y="0" width="900" height="230"
-                    rx="18" fill="url(#bg)"
-                    stroke="#263247"/>
+              <!-- Main card -->
+              <rect
+                x="0"
+                y="0"
+                width="900"
+                height="420"
+                rx="20"
+                fill="url(#background)"
+                stroke="#26354d"
+              />
 
-              <text x="38" y="42"
-                    fill="#ffffff"
-                    font-size="22"
-                    font-family="Arial, sans-serif"
-                    font-weight="700">
+              <!-- Header -->
+              <text
+                x="38"
+                y="40"
+                fill="#ffffff"
+                font-size="22"
+                font-family="Arial, sans-serif"
+                font-weight="700"
+              >
                 Engineering Metrics
               </text>
 
-              <text x="38" y="67"
-                    fill="#8fa3bf"
-                    font-size="12"
-                    font-family="Arial, sans-serif">
-                GitHub activity • automatically updated
+              <text
+                x="38"
+                y="63"
+                fill="#7f93ad"
+                font-size="12"
+                font-family="Arial, sans-serif"
+              >
+                GitHub engineering activity • automatically updated
               </text>
 
-              <rect x="38" y="82" width="824" height="2"
-                    fill="url(#accent)"/>
+              <rect
+                x="38"
+                y="80"
+                width="824"
+                height="2"
+                fill="url(#accent)"
+              />
+
+              <!-- Metric cards -->
 
               <g font-family="Arial, sans-serif">
 
-                <text x="72" y="125"
-                      fill="#ffffff"
-                      font-size="30"
-                      font-weight="700">
+                <!-- Contributions -->
+                <rect
+                  x="38"
+                  y="100"
+                  width="190"
+                  height="82"
+                  rx="12"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="55"
+                  y="123"
+                  fill="#6fa8ff"
+                  font-size="11"
+                  font-weight="700"
+                >
+                  CONTRIBUTIONS
+                </text>
+
+                <text
+                  x="55"
+                  y="157"
+                  fill="#ffffff"
+                  font-size="27"
+                  font-weight="700"
+                >
                   ${metrics.contributions}
                 </text>
 
-                <text x="72" y="150"
-                      fill="#8fa3bf"
-                      font-size="12">
-                  TOTAL CONTRIBUTIONS
+                <text
+                  x="137"
+                  y="157"
+                  fill="#6b7f9b"
+                  font-size="11"
+                >
+                  total
                 </text>
 
-                <text x="72" y="177"
-                      fill="#60a5fa"
-                      font-size="12">
-                  GitHub activity
-                </text>
+                <!-- Current streak -->
+                <rect
+                  x="242"
+                  y="100"
+                  width="190"
+                  height="82"
+                  rx="12"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
 
-                <line x1="270" y1="105" x2="270" y2="190"
-                      stroke="#334155"/>
-
-                <text x="325" y="125"
-                      fill="#ffffff"
-                      font-size="30"
-                      font-weight="700">
-                  ${metrics.currentStreak}
-                </text>
-
-                <text x="325" y="150"
-                      fill="#8fa3bf"
-                      font-size="12">
+                <text
+                  x="259"
+                  y="123"
+                  fill="#a78bfa"
+                  font-size="11"
+                  font-weight="700"
+                >
                   CURRENT STREAK
                 </text>
 
-                <text x="325" y="177"
-                      fill="#a78bfa"
-                      font-size="12">
-                  Consecutive days
+                <text
+                  x="259"
+                  y="157"
+                  fill="#ffffff"
+                  font-size="27"
+                  font-weight="700"
+                >
+                  ${metrics.currentStreak}
                 </text>
 
-                <line x1="520" y1="105" x2="520" y2="190"
-                      stroke="#334155"/>
-
-                <text x="575" y="125"
-                      fill="#ffffff"
-                      font-size="30"
-                      font-weight="700">
-                  ${metrics.longestStreak}
+                <text
+                  x="315"
+                  y="157"
+                  fill="#6b7f9b"
+                  font-size="11"
+                >
+                  days
                 </text>
 
-                <text x="575" y="150"
-                      fill="#8fa3bf"
-                      font-size="12">
+                <!-- Longest streak -->
+                <rect
+                  x="446"
+                  y="100"
+                  width="190"
+                  height="82"
+                  rx="12"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="463"
+                  y="123"
+                  fill="#34d399"
+                  font-size="11"
+                  font-weight="700"
+                >
                   LONGEST STREAK
                 </text>
 
-                <text x="575" y="177"
-                      fill="#34d399"
-                      font-size="12">
-                  Personal best
+                <text
+                  x="463"
+                  y="157"
+                  fill="#ffffff"
+                  font-size="27"
+                  font-weight="700"
+                >
+                  ${metrics.longestStreak}
                 </text>
 
-                <line x1="760" y1="105" x2="760" y2="190"
-                      stroke="#334155"/>
+                <text
+                  x="520"
+                  y="157"
+                  fill="#6b7f9b"
+                  font-size="11"
+                >
+                  days
+                </text>
 
-                <text x="790" y="125"
-                      fill="#ffffff"
-                      font-size="24"
-                      font-weight="700">
+                <!-- PRs -->
+                <rect
+                  x="650"
+                  y="100"
+                  width="212"
+                  height="82"
+                  rx="12"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="667"
+                  y="123"
+                  fill="#fbbf24"
+                  font-size="11"
+                  font-weight="700"
+                >
+                  PULL REQUESTS
+                </text>
+
+                <text
+                  x="667"
+                  y="157"
+                  fill="#ffffff"
+                  font-size="27"
+                  font-weight="700"
+                >
                   ${metrics.pullRequests}
                 </text>
 
-                <text x="790" y="150"
-                      fill="#8fa3bf"
-                      font-size="11">
-                  PRs
-                </text>
-
-                <text x="790" y="177"
-                      fill="#fbbf24"
-                      font-size="11">
-                  ${metrics.reviews} reviews
+                <text
+                  x="725"
+                  y="157"
+                  fill="#6b7f9b"
+                  font-size="11"
+                >
+                  contributions
                 </text>
 
               </g>
 
-              <text x="38" y="215"
-                    fill="#64748b"
-                    font-size="10"
-                    font-family="Arial, sans-serif">
-                Source: GitHub Contributions API • ${new Date().toISOString().slice(0,10)}
+              <!-- Activity section -->
+
+              <text
+                x="38"
+                y="218"
+                fill="#ffffff"
+                font-size="15"
+                font-family="Arial, sans-serif"
+                font-weight="700"
+              >
+                ⚡ Recent Engineering Activity
+              </text>
+
+              <text
+                x="38"
+                y="239"
+                fill="#7185a0"
+                font-size="11"
+                font-family="Arial, sans-serif"
+              >
+                Last 12 weeks of contribution activity
+              </text>
+
+              <!-- Activity progress -->
+
+              <rect
+                x="38"
+                y="254"
+                width="420"
+                height="7"
+                rx="4"
+                fill="#182235"
+              />
+
+              <rect
+                x="38"
+                y="254"
+                width="${barWidth}"
+                height="7"
+                rx="4"
+                fill="url(#activity)"
+              />
+
+              <text
+                x="470"
+                y="261"
+                fill="#8fa3bf"
+                font-size="11"
+                font-family="Arial, sans-serif"
+              >
+                ${activityScore}% activity
+              </text>
+
+              <!-- Heatmap -->
+
+              <g>
+                ${heatmap}
+              </g>
+
+              <!-- Secondary metrics -->
+
+              <g font-family="Arial, sans-serif">
+
+                <rect
+                  x="600"
+                  y="285"
+                  width="120"
+                  height="55"
+                  rx="10"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="615"
+                  y="306"
+                  fill="#7185a0"
+                  font-size="10"
+                >
+                  ISSUES
+                </text>
+
+                <text
+                  x="615"
+                  y="329"
+                  fill="#ffffff"
+                  font-size="20"
+                  font-weight="700"
+                >
+                  ${metrics.issues}
+                </text>
+
+                <rect
+                  x="734"
+                  y="285"
+                  width="128"
+                  height="55"
+                  rx="10"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="749"
+                  y="306"
+                  fill="#7185a0"
+                  font-size="10"
+                >
+                  REVIEWS
+                </text>
+
+                <text
+                  x="749"
+                  y="329"
+                  fill="#ffffff"
+                  font-size="20"
+                  font-weight="700"
+                >
+                  ${metrics.reviews}
+                </text>
+
+                <rect
+                  x="600"
+                  y="350"
+                  width="262"
+                  height="40"
+                  rx="10"
+                  fill="#111b2d"
+                  stroke="#26354d"
+                />
+
+                <text
+                  x="616"
+                  y="375"
+                  fill="#7185a0"
+                  font-size="10"
+                >
+                  CONTRIBUTED REPOSITORIES
+                </text>
+
+                <text
+                  x="820"
+                  y="375"
+                  fill="#ffffff"
+                  font-size="17"
+                  font-weight="700"
+                  text-anchor="end"
+                >
+                  ${metrics.repositories}
+                </text>
+
+              </g>
+
+              <!-- Footer -->
+
+              <text
+                x="38"
+                y="399"
+                fill="#50627b"
+                font-size="10"
+                font-family="Arial, sans-serif"
+              >
+                Source: GitHub Contributions API • ${new Date().toISOString().slice(0, 10)}
               </text>
 
             </svg>
